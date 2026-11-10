@@ -3,159 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Research Database</title>
+    <title>HTML5 Game Hub</title>
     <style>
-        /* Base Setup */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f8f9fa; color: #212529; overflow-x: hidden; transition: background-color 0.3s; }
-        
-        /* STATE 1: Ghost Search Disguise */
-        #disguise-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; background-color: #ffffff; }
-        .search-logo { font-size: 3.5rem; font-weight: 700; color: #1a73e8; margin-bottom: 25px; letter-spacing: -1px; }
-        .search-logo span { color: #ea4335; }
-        .search-logo span:nth-child(2) { color: #fbbc05; }
-        .search-logo span:nth-child(3) { color: #4285f4; }
-        .search-box-container { width: 100%; max-width: 580px; position: relative; }
-        .search-input { width: 100%; padding: 14px 20px; font-size: 16px; border: 1px solid #dfe1e5; border-radius: 24px; outline: none; box-shadow: none; transition: box-shadow 0.2s; }
-        .search-input:hover, .search-input:focus { box-shadow: 0 1px 6px rgba(32,33,36,0.28); border-color: rgba(223,225,229,0); }
-        .btn-container { margin-top: 25px; display: flex; gap: 12px; }
-        .search-btn { padding: 10px 16px; font-size: 14px; color: #3c4043; background-color: #f8f9fa; border: 1px solid #f8f9fa; border-radius: 4px; cursor: pointer; }
-        .search-btn:hover { border-color: #dadce0; color: #202124; }
-
-        /* STATE 2: Premium iOS App Store Hub */
-        #hub-state { display: none; background-color: #0d1117; color: #c9d1d9; min-height: 100vh; padding: 20px; }
-        .hub-header { max-width: 1200px; margin: 0 auto 30px auto; display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 15px; border-bottom: 1px solid #21262d; }
-        .hub-title h2 { color: #8b949e; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; }
-        .hub-title h1 { color: #f0f6fc; font-size: 2rem; font-weight: 700; margin-top: 5px; }
-        .panic-indicator { font-size: 0.85rem; color: #58a6ff; background: rgba(88,166,255,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid rgba(88,166,255,0.2); }
-        
-        /* Store View Grid with CSS iOS Icons */
-        .store-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-        .app-card { background: #161b22; border: 1px solid #30363d; border-radius: 22px; padding: 20px; display: flex; align-items: center; gap: 20px; cursor: pointer; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
-        .app-card:hover { transform: translateY(-3px); border-color: #58a6ff; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
-        
-        /* Premium CSS App Icons */
-        .app-icon { width: 65px; height: 65px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
-        .app-icon::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: linear-gradient(rgba(255,255,255,0.15), rgba(255,255,255,0)); }
-        
-        .icon-games { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
-        .icon-chat { background: linear-gradient(135deg, #00b4db, #0083b0); }
-        .icon-canvas { background: linear-gradient(135deg, #f12711, #f5af19); }
-        
-        .app-info { flex-grow: 1; }
-        .app-info h3 { color: #f0f6fc; font-size: 1.1rem; margin-bottom: 4px; }
-        .app-info p { color: #8b949e; font-size: 0.85rem; }
-        .get-btn { background: #21262d; color: #58a6ff; border: none; padding: 6px 16px; border-radius: 15px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.2s; }
-        .app-card:hover .get-btn { background: #58a6ff; color: #ffffff; }
-
-        /* Interactive Dashboard Screens */
-        .dashboard-view { display: none; max-width: 1400px; margin: 0 auto; grid-template-columns: 70% 30%; gap: 20px; height: calc(100vh - 120px); }
-        .main-pane { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 15px; display: flex; flex-direction: column; height: 100%; overflow-y: auto; }
-        .chat-pane { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 10px; height: 100%; display: flex; flex-direction: column; }
-        
-        .pane-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #30363d; }
-        .back-hub-btn { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; }
-        .back-hub-btn:hover { border-color: #8b949e; }
-        
-        /* Game View Internals */
-        .games-internal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .game-frame-card { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; padding: 10px; text-align: center; }
-        .game-frame-card h4 { margin-bottom: 10px; color: #f0f6fc; }
-        
-        /* Universal frames */
-        iframe { width: 100%; border: none; border-radius: 8px; background: #000; }
-        .game-iframe { height: 260px; }
-        .canvas-iframe { flex-grow: 1; height: 100%; min-height: 500px; }
-        .chat-iframe { height: 100%; width: 100%; flex-grow: 1; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e24;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #333;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+        .game-card {
+            background-color: #2a2a35;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .game-card h3 {
+            margin-top: 0;
+        }
+        .game-btn {
+            display: inline-block;
+            background-color: #5865F2;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        .game-btn:hover {
+            background-color: #4752c4;
+        }
     </style>
 </head>
 <body>
 
-    <!-- STATE 1: FAKE ACADEMIC DISGUISE -->
-    <div id="disguise-state">
-        <div class="search-logo">Edu<span>P</span><span>o</span><span>r</span><span>t</span>al</div>
-        <div class="search-box-container">
-            <input type="text" id="main-search-bar" class="search-input" placeholder="Search academic databases, reference materials, journals, and books...">
-        </div>
-        <div class="btn-container">
-            <button class="search-btn" onclick="checkSearchPassword()">Database Search</button>
-            <button class="search-btn" onclick="checkSearchPassword()">Advanced Options</button>
-        </div>
-    </div>
+    <header>
+        <h1>My HTML5 Gaming Portal</h1>
+        <p>Select a game to play locally.</p>
+    </header>
 
-    <!-- STATE 2: HIDDEN APPS HUB -->
-    <div id="hub-state">
-        <div class="hub-header">
-            <div class="hub-title">
-                <h2>Lounge Environment</h2>
-                <h1>App Store Hub</h1>
-            </div>
-            <div class="panic-indicator">Panic Mode: Press ESC key</div>
+    <main class="game-grid">
+        <!-- Example Game Card 1 -->
+        <div class="game-card">
+            <h3>Custom Game 1</h3>
+            <p>A local web-based game.</p>
+            <button class="game-btn" onclick="checkAccess('game1.html')">Play</button>
         </div>
 
-        <!-- APP LIST -->
-        <div id="store-front" class="store-grid">
-            <div class="app-card" onclick="openApp('games')">
-                <div class="app-icon icon-games">🎮</div>
-                <div class="app-info">
-                    <h3>Game Station</h3>
-                    <p>Launch HTML5 Web Games</p>
-                </div>
-                <button class="get-btn">OPEN</button>
-            </div>
-
-            <div class="app-card" onclick="openApp('chat')">
-                <div class="app-icon icon-chat">💬</div>
-                <div class="app-info">
-                    <h3>Global Chat</h3>
-                    <p>Live text communication panel</p>
-                </div>
-                <button class="get-btn">OPEN</button>
-            </div>
-
-            <div class="app-card" onclick="openApp('canvas')">
-                <div class="app-icon icon-canvas">🎨</div>
-                <div class="app-info">
-                    <h3>Live Canvas</h3>
-                    <p>Collaborative drawing hangout board</p>
-                </div>
-                <button class="get-btn">OPEN</button>
-            </div>
+        <!-- Example Game Card 2 -->
+        <div class="game-card">
+            <h3>Custom Game 2</h3>
+            <p>Another local web game.</p>
+            <button class="game-btn" onclick="checkAccess('game2.html')">Play</button>
         </div>
+    </main>
 
-        <!-- MAIN SPLIT PANEL VIEW -->
-        <div id="dashboard" class="dashboard-view">
-            <!-- Left Pane Dynamic Module Content -->
-            <div class="main-pane">
-                <div class="pane-header">
-                    <h2 id="pane-title">Application</h2>
-                    <button class="back-hub-btn" onclick="showStoreFront()">✕ Close App</button>
-                </div>
-                
-                <!-- Inner Layout: Games App -->
-                <div id="pane-games-content" class="games-internal-grid" style="display:none;">
-                    <div class="game-frame-card">
-                        <h4>Core Ball</h4>
-                        <iframe class="game-iframe" src="https://gamedistribution.com"></iframe>
-                    </div>
-                    <div class="game-frame-card">
-                        <h4>Retro Drift</h4>
-                        <iframe class="game-iframe" src="https://gamedistribution.com"></iframe>
-                    </div>
-                    <div class="game-frame-card">
-                        <h4>Pixel Runner</h4>
-                        <iframe class="game-iframe" src="https://gamedistribution.com"></iframe>
-                    </div>
-                </div>
+    <script>
+        // Simple front-end gatekeeping logic
+        function checkAccess(gameUrl) {
+            const password = prompt("Enter the room password to access this game:");
+            // Replace 'secret123' with your desired password
+            if (password === "secret123") {
+                window.location.href = gameUrl;
+            } else {
+                alert("Incorrect password. Access denied.");
+            }
+        }
+    </script>
 
-                <!-- Inner Layout: Shared Draw Board Canvas App -->
-                <div id="pane-canvas-content" style="display:none; flex-grow:1; flex-direction:column; height:100%;">
-                    <iframe class="canvas-iframe" src="https://tldraw.com" allow="camera; microphone"></iframe>
-                </div>
-
-                <!-- Fallback view pane -->
-                <div id="pane-fallback-content" style="color:#8b949e; padding:40px; text-align:center;">
-                    Select an application icon from the catalog grid layout to launch tools.
-                </div>
-            </div>
-
+</body>
+</html>
